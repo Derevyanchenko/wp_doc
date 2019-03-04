@@ -11,7 +11,7 @@ function get_nav()
 	$templates = array();
 	$templates[] = 'navigation.php';
 
-	locate_template( $templates );
+	locate_template( $templates, TRUE );
 }
 
 ?>
