@@ -1,5 +1,7 @@
 <?php  
 
+composer create-project --prefer-dist laravel/laravel blog
+
 // app->http->controllers  --- Контроллеры
 
 // app->http->свои файлы моделей
@@ -128,10 +130,24 @@
 
 	// пример формы с экшеном
 
+	composer require "laravelcollective/html":"^5.4.0"
 
-	{!! Form::open(["route" => ["tasks.store"]]) !!}
-        // инпуты и кнопка подтверждения
-    {!! Form::close() !!}
+		/*providers*/
+
+		Collective\Html\HtmlServiceProvider::class,
+
+		// aliases
+
+		'Form' => Collective\Html\FormFacade::class,
+	    'Html' => Collective\Html\HtmlFacade::class,
+
+		{!! Form::open(["route" => ["tasks.store"]]) !!}
+	        // инпуты и кнопка подтверждения
+	    {!! Form::close() !!}
+
+	    // или так с атрибутами
+
+	     {!! Form::open(["route" => ["tasks.update", $task->id], "method" => "PUT"]) !!}
 
 
     // redirect on home page
@@ -231,6 +247,12 @@
 	    {
 	    	Task::create($request->all());
 	    	return redirect()->route("tasks.index");
+	    }
+
+	     public function index()
+	    {
+	    	$tasks = Task::all();
+	    	return view("tasks.index", ["tasks" => $tasks]);
 	    }
 
 
