@@ -265,6 +265,26 @@ composer create-project --prefer-dist laravel/laravel blog
 	    	return view("tasks.view", ["task" => $task]);
 	    }
 
+	    public function edit($id)
+	    {
+	    	$myTask = Task::find($id);
+	    	return view("tasks.edit", ["task" => $myTask]);
+	    }
+
+	    public function update(Request $request, $id)
+		  {
+		  	$this->validate($request, [
+		  		"title" => "required",
+		  		"description" => "required"
+		  	]);
+
+		  	$myTask = Task::find($id);
+		  	$myTask->fill($request->all());
+		  	$myTask->save();
+
+		  	return redirect()->route("tasks.index");
+		  }	
+
 	    <a href="{{ route('tasks.view', $task->id) }}" class="btn btn-primary">view</a>
 
 	    // delete

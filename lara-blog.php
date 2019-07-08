@@ -1,4 +1,5 @@
 php artisan make:model Tag -m
+php artisan make:controller Admin\PostsController --resourse
 
 mysql -u root
 create database blog;
@@ -489,3 +490,85 @@ Routes:
 
 ?>
 
+
+<!-- админка admin lte -->
+
+в resourses/assets/admin:
+	- в нее переносим содержимое папки assets admin'a lte
+
+!! dashboard.html - главная стр админки
+
+Подключение стилей через вебпак:
+
+	in webpack.mix.js:
+
+		// так же пробежаться по всем страницам и подключить недостающие стили и скрипты
+
+		mix.styles([
+			"resourses/assets/admin/bootstrap/css/bootstrap.min.css",
+			// other styles
+		], "public/css/admin.css" );
+
+		mix.scripts([
+			"resourses/assets/admin/bootstrap/js/bootstrap.min.js",
+			"resourses/assets/admin/dist/js/scripts.js", // в него кидаем остальные вызовы скриптов на страницах ( например select2(); )
+			// other styles
+		], "public/js/admin.js" );
+
+		mix.copy("resourses/assets/admin/bootstrap/fonts", "public/fonts");
+		// также фонтасом и картинки копируем
+
+	// npm run dev
+
+// роуты админки
+
+<?php  
+
+	Route::group(["prefix" => "admin", "namespace" => "Admin"], function(){
+		Route::get("/", "DashboardController@index");
+		Route::resourse("/categories", "CategoriesController");
+		Route::resourse("/tags", "TagsController");
+		Route::resourse("/users", "UsersController");
+		Route::resourse("/posts", "PostsController");
+	});
+	
+	
+
+?>
+
+
+// контроллер категорий админки
+
+<?php  
+
+	use App\Category;
+	
+	public function index()
+	{
+		$categories = Category::all();
+		return view("admin.categories.index", ["categories" => $categories]);
+	}
+
+	public function create()
+	{
+		return view("admin.categories.create");
+	}
+
+	public function store( Request $request )
+	{
+		Category::create($request->all());
+		return view("admin.categories.create");
+	}
+
+
+	// post
+
+		// view index
+
+			{{Form::open([
+				"route" => "posts.store",
+				"files" => true
+			])}}
+
+
+?>
